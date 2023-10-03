@@ -8,7 +8,7 @@ autobins = false
 
 [lib]
 name = "rust_vapor_url_parser"
-crate-type = ["staticlib", "rlib"]
+crate-type = ["staticlib"]
 
 [dependencies]
 libc= "0.2"

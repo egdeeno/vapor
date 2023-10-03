@@ -19,6 +19,7 @@ struct SwiftGenPlugin: BuildToolPlugin {
         }
         var os = "apple-darwin"
         #if os(iOS)
+           os = "apple-ios"
         #elseif os(Linux)
            os = "unknown-linux-gnu"
         #elseif os(Windows)
