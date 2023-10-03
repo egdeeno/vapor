@@ -1,0 +1,14 @@
+
+[package]
+name = "RustVaporURLParser"
+version = "0.0.0"
+publish = false
+edition = "2021"
+autobins = false
+
+[lib]
+name = "rust_vapor_url_parser"
+crate-type = ["staticlib", "rlib"]
+
+[dependencies]
+libc= "0.2"

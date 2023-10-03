@@ -1,0 +1,5 @@
+module RustVaporURLParser [system][extern_c] {
+ header "../urlparser.h"
+ link "rust_vapor_url_parser"
+ export *
+}

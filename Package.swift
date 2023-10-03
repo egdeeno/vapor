@@ -65,16 +65,31 @@ let package = Package(
     ],
     targets: [
         // C helpers
-        .target(name: "CVaporBcrypt"),
-        .target(name: "CVaporURLParser"),
+        //.target(name: "CVaporBcrypt"),
+        //.target(name: "CVaporURLParser"),
+        
+        .target(
+            name: "RustVaporBcrypt",
+            linkerSettings: [LinkerSetting.unsafeFlags(["-L./Sources/RustVaporBcrypt/", "-lpthread", "-ldl"])],
+            //linkerSettings: [LinkerSetting.linkedLibrary("rustshims")],
+            plugins: [.plugin(name: "RustShimsSourceGenPlugin")]),
+        .target(
+            name: "RustVaporURLParser",
+            linkerSettings: [LinkerSetting.unsafeFlags(["-L./Sources/RustVaporURLParser/", "-lpthread", "-ldl"])],
+            //linkerSettings: [LinkerSetting.linkedLibrary("rustshims")],
+            plugins: [.plugin(name: "RustShimsSourceGenPlugin")]),
+        .plugin(
+            name: "RustShimsSourceGenPlugin",
+            capability: .buildTool()
+        ),
 
         // Vapor
         .target(name: "Vapor", dependencies: [
             .product(name: "AsyncHTTPClient", package: "async-http-client"),
             .product(name: "AsyncKit", package: "async-kit"),
             .product(name: "Backtrace", package: "swift-backtrace"),
-            .target(name: "CVaporBcrypt"),
-            .target(name: "CVaporURLParser"),
+            .target(name: "RustVaporBcrypt"),
+            .target(name: "RustVaporURLParser"),
             .product(name: "ConsoleKit", package: "console-kit"),
             .product(name: "Logging", package: "swift-log"),
             .product(name: "Metrics", package: "swift-metrics"),

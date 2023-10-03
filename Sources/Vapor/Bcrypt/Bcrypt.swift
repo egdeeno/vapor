@@ -1,5 +1,5 @@
 import Foundation
-import CVaporBcrypt
+import RustVaporBcrypt
 
 // MARK: BCrypt
 

@@ -1,4 +1,4 @@
-import CVaporURLParser
+import RustVaporURLParser
 
 public struct URI: Sendable, ExpressibleByStringInterpolation, CustomStringConvertible {
     /// A URI's scheme.

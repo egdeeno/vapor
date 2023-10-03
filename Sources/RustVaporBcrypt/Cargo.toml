@@ -1,0 +1,13 @@
+[package]
+name = "RustVaporBcrypt"
+version = "0.0.0"
+publish = false
+edition = "2021"
+autobins = false
+
+[lib]
+name = "rust_vapor_bcrypt"
+crate-type = ["staticlib"]
+
+[dependencies]
+libc= "0.2"

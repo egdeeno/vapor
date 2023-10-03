@@ -1,0 +1,5 @@
+module RustVaporBcrypt [system][extern_c] {
+ header "../bcrypt.h"
+ link "rust_vapor_bcrypt"
+ export *
+}
