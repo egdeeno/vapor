@@ -30,14 +30,13 @@ extern "C" {
     fn __ctype_b_loc() -> *mut *const libc::c_ushort;
     fn __errno_location() -> *mut libc::c_int;
 }
-pub type __uint8_t = libc::c_uchar;
-pub type __uint16_t = libc::c_ushort;
-pub type __uint32_t = libc::c_uint;
+
 pub type size_t = libc::c_ulong;
-pub type u_int8_t = __uint8_t;
-pub type u_int16_t = __uint16_t;
-pub type u_int32_t = __uint32_t;
+pub type u_int8_t = libc::c_uchar;
+pub type u_int16_t = libc::c_ushort;
+pub type u_int32_t = libc::c_uint;
 pub type blf_ctx = BlowfishContext;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct BlowfishContext {
@@ -57,6 +56,7 @@ pub const _ISxdigit: C2RustUnnamed = 4096;
 pub const _ISalpha: C2RustUnnamed = 1024;
 pub const _ISlower: C2RustUnnamed = 512;
 pub const _ISupper: C2RustUnnamed = 256;
+
 #[no_mangle]
 pub unsafe extern "C" fn vapor_bcrypt_hashpass(
     mut key: *const libc::c_char,
@@ -83,18 +83,18 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
     >(b"OrpheanBeholderScryDoubt");
     let mut csalt: [u_int8_t; 16] = [0; 16];
     let mut cdata: [u_int32_t; 6] = [0; 6];
-    if !(encryptedlen < 61 as libc::c_int as libc::c_ulong) {
-        if !(*salt.offset(0 as libc::c_int as isize) as libc::c_int != '$' as i32) {
-            salt = salt.offset(1 as libc::c_int as isize);
-            if !(*salt.offset(0 as libc::c_int as isize) as libc::c_int != '2' as i32) {
-                minor = *salt.offset(1 as libc::c_int as isize) as u_int8_t;
+    if !(encryptedlen < 61) {
+        if !(*salt.offset(0) as libc::c_int != '$' as i32) {
+            salt = salt.offset(1);
+            if !(*salt.offset(0) as libc::c_int != '2' as i32) {
+                minor = *salt.offset(1) as u_int8_t;
                 match minor as libc::c_int {
                     97 => {
                         current_block = 15122898966093540124;
                         match current_block {
                             15122898966093540124 => {
                                 key_len = (strlen(key))
-                                    .wrapping_add(1 as libc::c_int as libc::c_ulong) as u_int8_t
+                                    .wrapping_add(1) as u_int8_t
                                     as size_t;
                             }
                             _ => {
@@ -103,51 +103,50 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                                     key_len = 72 as libc::c_int as size_t;
                                 }
                                 key_len = key_len.wrapping_add(1);
-                                key_len;
                             }
                         }
                         if !(*salt.offset(2 as libc::c_int as isize) as libc::c_int
                             != '$' as i32)
                         {
-                            salt = salt.offset(3 as libc::c_int as isize);
+                            salt = salt.offset(3);
                             if !(*(*__ctype_b_loc())
                                 .offset(
-                                    *salt.offset(0 as libc::c_int as isize) as libc::c_uchar
+                                    *salt.offset(0) as libc::c_uchar
                                         as libc::c_int as isize,
                                 ) as libc::c_int
                                 & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
                                 == 0
                                 || *(*__ctype_b_loc())
                                     .offset(
-                                        *salt.offset(1 as libc::c_int as isize) as libc::c_uchar
+                                        *salt.offset(1) as libc::c_uchar
                                             as libc::c_int as isize,
                                     ) as libc::c_int
                                     & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
                                     == 0
-                                || *salt.offset(2 as libc::c_int as isize) as libc::c_int
+                                || *salt.offset(2) as libc::c_int
                                     != '$' as i32)
                             {
-                                logr = (*salt.offset(1 as libc::c_int as isize)
+                                logr = (*salt.offset(1)
                                     as libc::c_int - '0' as i32
-                                    + (*salt.offset(0 as libc::c_int as isize) as libc::c_int
+                                    + (*salt.offset(0) as libc::c_int
                                         - '0' as i32) * 10 as libc::c_int) as u_int8_t;
                                 if !((logr as libc::c_int) < 4 as libc::c_int
                                     || logr as libc::c_int > 31 as libc::c_int)
                                 {
                                     rounds = (1 as libc::c_uint) << logr as libc::c_int;
-                                    salt = salt.offset(3 as libc::c_int as isize);
+                                    salt = salt.offset(3);
                                     if !((strlen(salt))
-                                        .wrapping_mul(3 as libc::c_int as libc::c_ulong)
-                                        .wrapping_div(4 as libc::c_int as libc::c_ulong)
-                                        < 16 as libc::c_int as libc::c_ulong)
+                                        .wrapping_mul(3)
+                                        .wrapping_div(4)
+                                        < 16)
                                     {
                                         if !(decode_base64(
                                             csalt.as_mut_ptr(),
-                                            16 as libc::c_int as size_t,
+                                            16,
                                             salt,
                                         ) != 0)
                                         {
-                                            salt_len = 16 as libc::c_int as u_int8_t;
+                                            salt_len = 16;
                                             Vapor_Blowfish_initstate(&mut state);
                                             Vapor_Blowfish_expandstate(
                                                 &mut state,
@@ -156,7 +155,7 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                                                 key as *mut u_int8_t,
                                                 key_len as u_int16_t,
                                             );
-                                            k = 0 as libc::c_int as u_int32_t;
+                                            k = 0;
                                             while k < rounds {
                                                 Vapor_Blowfish_expand0state(
                                                     &mut state,
@@ -169,11 +168,10 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                                                     salt_len as u_int16_t,
                                                 );
                                                 k = k.wrapping_add(1);
-                                                k;
                                             }
-                                            j = 0 as libc::c_int as u_int16_t;
-                                            i = 0 as libc::c_int as u_int32_t;
-                                            while i < 6 as libc::c_int as libc::c_uint {
+                                            j = 0;
+                                            i = 0;
+                                            while i < 6 {
                                                 cdata[i
                                                     as usize] = Vapor_Blowfish_stream2word(
                                                     ciphertext.as_mut_ptr(),
@@ -181,23 +179,21 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                                                     &mut j,
                                                 );
                                                 i = i.wrapping_add(1);
-                                                i;
                                             }
-                                            k = 0 as libc::c_int as u_int32_t;
-                                            while k < 64 as libc::c_int as libc::c_uint {
+                                            k = 0;
+                                            while k < 64 {
                                                 vapor_blf_enc(
                                                     &mut state,
                                                     cdata.as_mut_ptr(),
-                                                    (6 as libc::c_int / 2 as libc::c_int) as u_int16_t,
+                                                    (6/2) as u_int16_t,
                                                 );
                                                 k = k.wrapping_add(1);
-                                                k;
                                             }
-                                            i = 0 as libc::c_int as u_int32_t;
+                                            i = 0;
                                             while i < 6 as libc::c_int as libc::c_uint {
                                                 ciphertext[(4 as libc::c_int as libc::c_uint)
                                                     .wrapping_mul(i)
-                                                    .wrapping_add(3 as libc::c_int as libc::c_uint)
+                                                    .wrapping_add(3)
                                                     as usize] = (cdata[i as usize]
                                                     & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
                                                 cdata[i as usize] = cdata[i as usize] >> 8 as libc::c_int;
@@ -209,59 +205,57 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                                                 cdata[i as usize] = cdata[i as usize] >> 8 as libc::c_int;
                                                 ciphertext[(4 as libc::c_int as libc::c_uint)
                                                     .wrapping_mul(i)
-                                                    .wrapping_add(1 as libc::c_int as libc::c_uint)
+                                                    .wrapping_add(1)
                                                     as usize] = (cdata[i as usize]
                                                     & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
                                                 cdata[i as usize] = cdata[i as usize] >> 8 as libc::c_int;
                                                 ciphertext[(4 as libc::c_int as libc::c_uint)
                                                     .wrapping_mul(i)
-                                                    .wrapping_add(0 as libc::c_int as libc::c_uint)
+                                                    .wrapping_add(0)
                                                     as usize] = (cdata[i as usize]
                                                     & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
                                                 i = i.wrapping_add(1);
-                                                i;
                                             }
                                             snprintf(
                                                 encrypted,
-                                                8 as libc::c_int as libc::c_ulong,
+                                                8,
                                                 b"$2%c$%2.2u$\0" as *const u8 as *const libc::c_char,
                                                 minor as libc::c_int,
                                                 logr as libc::c_int,
                                             );
                                             vapor_encode_base64(
-                                                encrypted.offset(7 as libc::c_int as isize),
+                                                encrypted.offset(7),
                                                 csalt.as_mut_ptr(),
-                                                16 as libc::c_int as size_t,
+                                                16,
                                             );
                                             vapor_encode_base64(
                                                 encrypted
-                                                    .offset(7 as libc::c_int as isize)
-                                                    .offset(22 as libc::c_int as isize),
+                                                    .offset(7)
+                                                    .offset(22),
                                                 ciphertext.as_mut_ptr(),
-                                                (4 as libc::c_int * 6 as libc::c_int - 1 as libc::c_int)
-                                                    as size_t,
+                                                4 * 6 - 1,
                                             );
                                             memset(
                                                 &mut state as *mut blf_ctx as *mut libc::c_void,
-                                                0 as libc::c_int,
+                                                0,
                                                 ::core::mem::size_of::<blf_ctx>() as libc::c_ulong,
                                             );
                                             memset(
                                                 ciphertext.as_mut_ptr() as *mut libc::c_void,
-                                                0 as libc::c_int,
+                                                0,
                                                 ::core::mem::size_of::<[u_int8_t; 24]>() as libc::c_ulong,
                                             );
                                             memset(
                                                 csalt.as_mut_ptr() as *mut libc::c_void,
-                                                0 as libc::c_int,
+                                                0,
                                                 ::core::mem::size_of::<[u_int8_t; 16]>() as libc::c_ulong,
                                             );
                                             memset(
                                                 cdata.as_mut_ptr() as *mut libc::c_void,
-                                                0 as libc::c_int,
+                                                0,
                                                 ::core::mem::size_of::<[u_int32_t; 6]>() as libc::c_ulong,
                                             );
-                                            return 0 as libc::c_int;
+                                            return 0;
                                         }
                                     }
                                 }
@@ -273,60 +267,57 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                         match current_block {
                             15122898966093540124 => {
                                 key_len = (strlen(key))
-                                    .wrapping_add(1 as libc::c_int as libc::c_ulong) as u_int8_t
+                                    .wrapping_add(1) as u_int8_t
                                     as size_t;
                             }
                             _ => {
                                 key_len = strlen(key);
-                                if key_len > 72 as libc::c_int as libc::c_ulong {
-                                    key_len = 72 as libc::c_int as size_t;
+                                if key_len > 72 {
+                                    key_len = 72;
                                 }
                                 key_len = key_len.wrapping_add(1);
-                                key_len;
                             }
                         }
-                        if !(*salt.offset(2 as libc::c_int as isize) as libc::c_int
+                        if !(*salt.offset(2) as libc::c_int
                             != '$' as i32)
                         {
-                            salt = salt.offset(3 as libc::c_int as isize);
+                            salt = salt.offset(3);
                             if !(*(*__ctype_b_loc())
                                 .offset(
-                                    *salt.offset(0 as libc::c_int as isize) as libc::c_uchar
-                                        as libc::c_int as isize,
+                                    *salt.offset(0) as libc::c_uchar as libc::c_int as isize,
                                 ) as libc::c_int
                                 & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
                                 == 0
                                 || *(*__ctype_b_loc())
                                     .offset(
-                                        *salt.offset(1 as libc::c_int as isize) as libc::c_uchar
-                                            as libc::c_int as isize,
+                                        *salt.offset(1) as libc::c_uchar as libc::c_int as isize,
                                     ) as libc::c_int
                                     & _ISdigit as libc::c_int as libc::c_ushort as libc::c_int
                                     == 0
-                                || *salt.offset(2 as libc::c_int as isize) as libc::c_int
+                                || *salt.offset(2) as libc::c_int
                                     != '$' as i32)
                             {
-                                logr = (*salt.offset(1 as libc::c_int as isize)
+                                logr = (*salt.offset(1)
                                     as libc::c_int - '0' as i32
-                                    + (*salt.offset(0 as libc::c_int as isize) as libc::c_int
+                                    + (*salt.offset(0) as libc::c_int
                                         - '0' as i32) * 10 as libc::c_int) as u_int8_t;
                                 if !((logr as libc::c_int) < 4 as libc::c_int
                                     || logr as libc::c_int > 31 as libc::c_int)
                                 {
-                                    rounds = (1 as libc::c_uint) << logr as libc::c_int;
-                                    salt = salt.offset(3 as libc::c_int as isize);
+                                    rounds = (1) << logr as libc::c_int;
+                                    salt = salt.offset(3);
                                     if !((strlen(salt))
-                                        .wrapping_mul(3 as libc::c_int as libc::c_ulong)
-                                        .wrapping_div(4 as libc::c_int as libc::c_ulong)
-                                        < 16 as libc::c_int as libc::c_ulong)
+                                        .wrapping_mul(3)
+                                        .wrapping_div(4)
+                                        < 16)
                                     {
                                         if !(decode_base64(
                                             csalt.as_mut_ptr(),
-                                            16 as libc::c_int as size_t,
+                                            16,
                                             salt,
                                         ) != 0)
                                         {
-                                            salt_len = 16 as libc::c_int as u_int8_t;
+                                            salt_len = 16;
                                             Vapor_Blowfish_initstate(&mut state);
                                             Vapor_Blowfish_expandstate(
                                                 &mut state,
@@ -335,7 +326,7 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                                                 key as *mut u_int8_t,
                                                 key_len as u_int16_t,
                                             );
-                                            k = 0 as libc::c_int as u_int32_t;
+                                            k = 0;
                                             while k < rounds {
                                                 Vapor_Blowfish_expand0state(
                                                     &mut state,
@@ -348,57 +339,53 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                                                     salt_len as u_int16_t,
                                                 );
                                                 k = k.wrapping_add(1);
-                                                k;
                                             }
-                                            j = 0 as libc::c_int as u_int16_t;
-                                            i = 0 as libc::c_int as u_int32_t;
-                                            while i < 6 as libc::c_int as libc::c_uint {
+                                            j = 0;
+                                            i = 0;
+                                            while i < 6 {
                                                 cdata[i
                                                     as usize] = Vapor_Blowfish_stream2word(
                                                     ciphertext.as_mut_ptr(),
-                                                    (4 as libc::c_int * 6 as libc::c_int) as u_int16_t,
+                                                    (4 * 6) as u_int16_t,
                                                     &mut j,
                                                 );
                                                 i = i.wrapping_add(1);
-                                                i;
                                             }
-                                            k = 0 as libc::c_int as u_int32_t;
-                                            while k < 64 as libc::c_int as libc::c_uint {
+                                            k = 0;
+                                            while k < 64 {
                                                 vapor_blf_enc(
                                                     &mut state,
                                                     cdata.as_mut_ptr(),
                                                     (6 as libc::c_int / 2 as libc::c_int) as u_int16_t,
                                                 );
                                                 k = k.wrapping_add(1);
-                                                k;
                                             }
-                                            i = 0 as libc::c_int as u_int32_t;
-                                            while i < 6 as libc::c_int as libc::c_uint {
+                                            i = 0;
+                                            while i < 6 {
                                                 ciphertext[(4 as libc::c_int as libc::c_uint)
                                                     .wrapping_mul(i)
-                                                    .wrapping_add(3 as libc::c_int as libc::c_uint)
+                                                    .wrapping_add(3)
                                                     as usize] = (cdata[i as usize]
                                                     & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
                                                 cdata[i as usize] = cdata[i as usize] >> 8 as libc::c_int;
                                                 ciphertext[(4 as libc::c_int as libc::c_uint)
                                                     .wrapping_mul(i)
-                                                    .wrapping_add(2 as libc::c_int as libc::c_uint)
+                                                    .wrapping_add(2)
                                                     as usize] = (cdata[i as usize]
                                                     & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
                                                 cdata[i as usize] = cdata[i as usize] >> 8 as libc::c_int;
                                                 ciphertext[(4 as libc::c_int as libc::c_uint)
                                                     .wrapping_mul(i)
-                                                    .wrapping_add(1 as libc::c_int as libc::c_uint)
+                                                    .wrapping_add(1)
                                                     as usize] = (cdata[i as usize]
                                                     & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
                                                 cdata[i as usize] = cdata[i as usize] >> 8 as libc::c_int;
                                                 ciphertext[(4 as libc::c_int as libc::c_uint)
                                                     .wrapping_mul(i)
-                                                    .wrapping_add(0 as libc::c_int as libc::c_uint)
+                                                    .wrapping_add(0)
                                                     as usize] = (cdata[i as usize]
                                                     & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
                                                 i = i.wrapping_add(1);
-                                                i;
                                             }
                                             snprintf(
                                                 encrypted,
@@ -410,7 +397,7 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
                                             vapor_encode_base64(
                                                 encrypted.offset(7 as libc::c_int as isize),
                                                 csalt.as_mut_ptr(),
-                                                16 as libc::c_int as size_t,
+                                                16,
                                             );
                                             vapor_encode_base64(
                                                 encrypted
@@ -453,8 +440,9 @@ pub unsafe extern "C" fn vapor_bcrypt_hashpass(
         }
     }
     *__errno_location() = 22 as libc::c_int;
-    return -(1 as libc::c_int);
+    return -1;
 }
+
 static mut Base64Code: [u_int8_t; 65] = unsafe {
     *::core::mem::transmute::<
         &[u8; 65],
@@ -462,135 +450,136 @@ static mut Base64Code: [u_int8_t; 65] = unsafe {
     >(b"./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\0")
 };
 static mut index_64: [u_int8_t; 128] = [
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    0 as libc::c_int as u_int8_t,
-    1 as libc::c_int as u_int8_t,
-    54 as libc::c_int as u_int8_t,
-    55 as libc::c_int as u_int8_t,
-    56 as libc::c_int as u_int8_t,
-    57 as libc::c_int as u_int8_t,
-    58 as libc::c_int as u_int8_t,
-    59 as libc::c_int as u_int8_t,
-    60 as libc::c_int as u_int8_t,
-    61 as libc::c_int as u_int8_t,
-    62 as libc::c_int as u_int8_t,
-    63 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    2 as libc::c_int as u_int8_t,
-    3 as libc::c_int as u_int8_t,
-    4 as libc::c_int as u_int8_t,
-    5 as libc::c_int as u_int8_t,
-    6 as libc::c_int as u_int8_t,
-    7 as libc::c_int as u_int8_t,
-    8 as libc::c_int as u_int8_t,
-    9 as libc::c_int as u_int8_t,
-    10 as libc::c_int as u_int8_t,
-    11 as libc::c_int as u_int8_t,
-    12 as libc::c_int as u_int8_t,
-    13 as libc::c_int as u_int8_t,
-    14 as libc::c_int as u_int8_t,
-    15 as libc::c_int as u_int8_t,
-    16 as libc::c_int as u_int8_t,
-    17 as libc::c_int as u_int8_t,
-    18 as libc::c_int as u_int8_t,
-    19 as libc::c_int as u_int8_t,
-    20 as libc::c_int as u_int8_t,
-    21 as libc::c_int as u_int8_t,
-    22 as libc::c_int as u_int8_t,
-    23 as libc::c_int as u_int8_t,
-    24 as libc::c_int as u_int8_t,
-    25 as libc::c_int as u_int8_t,
-    26 as libc::c_int as u_int8_t,
-    27 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    28 as libc::c_int as u_int8_t,
-    29 as libc::c_int as u_int8_t,
-    30 as libc::c_int as u_int8_t,
-    31 as libc::c_int as u_int8_t,
-    32 as libc::c_int as u_int8_t,
-    33 as libc::c_int as u_int8_t,
-    34 as libc::c_int as u_int8_t,
-    35 as libc::c_int as u_int8_t,
-    36 as libc::c_int as u_int8_t,
-    37 as libc::c_int as u_int8_t,
-    38 as libc::c_int as u_int8_t,
-    39 as libc::c_int as u_int8_t,
-    40 as libc::c_int as u_int8_t,
-    41 as libc::c_int as u_int8_t,
-    42 as libc::c_int as u_int8_t,
-    43 as libc::c_int as u_int8_t,
-    44 as libc::c_int as u_int8_t,
-    45 as libc::c_int as u_int8_t,
-    46 as libc::c_int as u_int8_t,
-    47 as libc::c_int as u_int8_t,
-    48 as libc::c_int as u_int8_t,
-    49 as libc::c_int as u_int8_t,
-    50 as libc::c_int as u_int8_t,
-    51 as libc::c_int as u_int8_t,
-    52 as libc::c_int as u_int8_t,
-    53 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
-    255 as libc::c_int as u_int8_t,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    0,
+    1,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    255,
+    255,
+    255,
+    255,
+    255,
+    255,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    255,
+    255,
+    255,
+    255,
+    255,
 ];
+
 unsafe extern "C" fn decode_base64(
     mut buffer: *mut u_int8_t,
     mut len: size_t,
@@ -611,11 +600,11 @@ unsafe extern "C" fn decode_base64(
         if c1 as libc::c_int == 255 as libc::c_int {
             return -(1 as libc::c_int);
         }
-        c2 = (if *p.offset(1 as libc::c_int as isize) as libc::c_int > 127 as libc::c_int
+        c2 = (if *p.offset(1) as libc::c_int > 127 as libc::c_int
         {
             255 as libc::c_int
         } else {
-            index_64[*p.offset(1 as libc::c_int as isize) as usize] as libc::c_int
+            index_64[*p.offset(1) as usize] as libc::c_int
         }) as u_int8_t;
         if c2 as libc::c_int == 255 as libc::c_int {
             return -(1 as libc::c_int);
@@ -627,11 +616,11 @@ unsafe extern "C" fn decode_base64(
         if bp >= buffer.offset(len as isize) {
             break;
         }
-        c3 = (if *p.offset(2 as libc::c_int as isize) as libc::c_int > 127 as libc::c_int
+        c3 = (if *p.offset(2) as libc::c_int > 127 as libc::c_int
         {
             255 as libc::c_int
         } else {
-            index_64[*p.offset(2 as libc::c_int as isize) as usize] as libc::c_int
+            index_64[*p.offset(2) as usize] as libc::c_int
         }) as u_int8_t;
         if c3 as libc::c_int == 255 as libc::c_int {
             return -(1 as libc::c_int);
@@ -643,11 +632,11 @@ unsafe extern "C" fn decode_base64(
         if bp >= buffer.offset(len as isize) {
             break;
         }
-        c4 = (if *p.offset(3 as libc::c_int as isize) as libc::c_int > 127 as libc::c_int
+        c4 = (if *p.offset(3) as libc::c_int > 127 as libc::c_int
         {
             255 as libc::c_int
         } else {
-            index_64[*p.offset(3 as libc::c_int as isize) as usize] as libc::c_int
+            index_64[*p.offset(3) as usize] as libc::c_int
         }) as u_int8_t;
         if c4 as libc::c_int == 255 as libc::c_int {
             return -(1 as libc::c_int);
@@ -656,10 +645,11 @@ unsafe extern "C" fn decode_base64(
         bp = bp.offset(1);
         *fresh2 = ((c3 as libc::c_int & 0x3 as libc::c_int) << 6 as libc::c_int
             | c4 as libc::c_int) as u_int8_t;
-        p = p.offset(4 as libc::c_int as isize);
+        p = p.offset(4);
     }
-    return 0 as libc::c_int;
+    return 0;
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn vapor_encode_base64(
     mut b64buffer: *mut libc::c_char,

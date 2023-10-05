@@ -1,10 +1,9 @@
 use ::libc;
-pub type __uint8_t = libc::c_uchar;
-pub type __uint16_t = libc::c_ushort;
-pub type __uint32_t = libc::c_uint;
-pub type u_int8_t = __uint8_t;
-pub type u_int16_t = __uint16_t;
-pub type u_int32_t = __uint32_t;
+
+pub type u_int8_t = libc::c_uchar;
+pub type u_int16_t = libc::c_ushort;
+pub type u_int32_t = libc::c_uint;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct BlowfishContext {
@@ -12,6 +11,7 @@ pub struct BlowfishContext {
     pub P: [u_int32_t; 18],
 }
 pub type blf_ctx = BlowfishContext;
+
 #[no_mangle]
 pub unsafe extern "C" fn Vapor_Blowfish_encipher(
     mut c: *mut blf_ctx,
@@ -19,11 +19,11 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
 ) {
     let mut Xl: u_int32_t = 0;
     let mut Xr: u_int32_t = 0;
-    let mut s: *mut u_int32_t = ((*c).S[0 as libc::c_int as usize]).as_mut_ptr();
+    let mut s: *mut u_int32_t = ((*c).S[0]).as_mut_ptr();
     let mut p: *mut u_int32_t = ((*c).P).as_mut_ptr();
-    Xl = *x.offset(0 as libc::c_int as isize);
-    Xr = *x.offset(1 as libc::c_int as isize);
-    Xl ^= *p.offset(0 as libc::c_int as isize);
+    Xl = *x.offset(0);
+    Xr = *x.offset(1);
+    Xl ^= *p.offset(0);
     Xr
         ^= ((*s
             .offset(
@@ -53,7 +53,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(1 as libc::c_int as isize);
+            ) ^ *p.offset(1);
     Xl
         ^= ((*s
             .offset(
@@ -83,7 +83,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(2 as libc::c_int as isize);
+            ) ^ *p.offset(2);
     Xr
         ^= ((*s
             .offset(
@@ -113,7 +113,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(3 as libc::c_int as isize);
+            ) ^ *p.offset(3);
     Xl
         ^= ((*s
             .offset(
@@ -143,7 +143,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(4 as libc::c_int as isize);
+            ) ^ *p.offset(4);
     Xr
         ^= ((*s
             .offset(
@@ -173,7 +173,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(5 as libc::c_int as isize);
+            ) ^ *p.offset(5);
     Xl
         ^= ((*s
             .offset(
@@ -203,7 +203,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(6 as libc::c_int as isize);
+            ) ^ *p.offset(6);
     Xr
         ^= ((*s
             .offset(
@@ -233,7 +233,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(7 as libc::c_int as isize);
+            ) ^ *p.offset(7);
     Xl
         ^= ((*s
             .offset(
@@ -263,7 +263,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(8 as libc::c_int as isize);
+            ) ^ *p.offset(8);
     Xr
         ^= ((*s
             .offset(
@@ -293,7 +293,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(9 as libc::c_int as isize);
+            ) ^ *p.offset(9);
     Xl
         ^= ((*s
             .offset(
@@ -323,7 +323,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(10 as libc::c_int as isize);
+            ) ^ *p.offset(10);
     Xr
         ^= ((*s
             .offset(
@@ -353,7 +353,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(11 as libc::c_int as isize);
+            ) ^ *p.offset(11);
     Xl
         ^= ((*s
             .offset(
@@ -383,7 +383,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(12 as libc::c_int as isize);
+            ) ^ *p.offset(12);
     Xr
         ^= ((*s
             .offset(
@@ -443,7 +443,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(14 as libc::c_int as isize);
+            ) ^ *p.offset(14);
     Xr
         ^= ((*s
             .offset(
@@ -473,7 +473,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(15 as libc::c_int as isize);
+            ) ^ *p.offset(15);
     Xl
         ^= ((*s
             .offset(
@@ -503,10 +503,11 @@ pub unsafe extern "C" fn Vapor_Blowfish_encipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(16 as libc::c_int as isize);
-    *x.offset(0 as libc::c_int as isize) = Xr ^ *p.offset(17 as libc::c_int as isize);
-    *x.offset(1 as libc::c_int as isize) = Xl;
+            ) ^ *p.offset(16);
+    *x.offset(0) = Xr ^ *p.offset(17);
+    *x.offset(1) = Xl;
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn Vapor_Blowfish_decipher(
     mut c: *mut blf_ctx,
@@ -514,11 +515,11 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
 ) {
     let mut Xl: u_int32_t = 0;
     let mut Xr: u_int32_t = 0;
-    let mut s: *mut u_int32_t = ((*c).S[0 as libc::c_int as usize]).as_mut_ptr();
+    let mut s: *mut u_int32_t = ((*c).S[0]).as_mut_ptr();
     let mut p: *mut u_int32_t = ((*c).P).as_mut_ptr();
-    Xl = *x.offset(0 as libc::c_int as isize);
-    Xr = *x.offset(1 as libc::c_int as isize);
-    Xl ^= *p.offset(17 as libc::c_int as isize);
+    Xl = *x.offset(0);
+    Xr = *x.offset(1);
+    Xl ^= *p.offset(17);
     Xr
         ^= ((*s
             .offset(
@@ -548,7 +549,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(16 as libc::c_int as isize);
+            ) ^ *p.offset(16);
     Xl
         ^= ((*s
             .offset(
@@ -578,7 +579,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(15 as libc::c_int as isize);
+            ) ^ *p.offset(15);
     Xr
         ^= ((*s
             .offset(
@@ -608,7 +609,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(14 as libc::c_int as isize);
+            ) ^ *p.offset(14);
     Xl
         ^= ((*s
             .offset(
@@ -638,7 +639,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(13 as libc::c_int as isize);
+            ) ^ *p.offset(13);
     Xr
         ^= ((*s
             .offset(
@@ -698,7 +699,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(11 as libc::c_int as isize);
+            ) ^ *p.offset(11);
     Xr
         ^= ((*s
             .offset(
@@ -728,7 +729,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(10 as libc::c_int as isize);
+            ) ^ *p.offset(10);
     Xl
         ^= ((*s
             .offset(
@@ -758,7 +759,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(9 as libc::c_int as isize);
+            ) ^ *p.offset(9);
     Xr
         ^= ((*s
             .offset(
@@ -788,7 +789,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(8 as libc::c_int as isize);
+            ) ^ *p.offset(8);
     Xl
         ^= ((*s
             .offset(
@@ -818,7 +819,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(7 as libc::c_int as isize);
+            ) ^ *p.offset(7);
     Xr
         ^= ((*s
             .offset(
@@ -848,7 +849,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(6 as libc::c_int as isize);
+            ) ^ *p.offset(6);
     Xl
         ^= ((*s
             .offset(
@@ -878,7 +879,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(5 as libc::c_int as isize);
+            ) ^ *p.offset(5);
     Xr
         ^= ((*s
             .offset(
@@ -908,7 +909,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(4 as libc::c_int as isize);
+            ) ^ *p.offset(4);
     Xl
         ^= ((*s
             .offset(
@@ -938,7 +939,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(3 as libc::c_int as isize);
+            ) ^ *p.offset(3);
     Xr
         ^= ((*s
             .offset(
@@ -968,7 +969,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xl & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(2 as libc::c_int as isize);
+            ) ^ *p.offset(2);
     Xl
         ^= ((*s
             .offset(
@@ -998,10 +999,11 @@ pub unsafe extern "C" fn Vapor_Blowfish_decipher(
                             .wrapping_add(Xr & 0xff as libc::c_int as libc::c_uint)
                             as isize,
                     ),
-            ) ^ *p.offset(1 as libc::c_int as isize);
-    *x.offset(0 as libc::c_int as isize) = Xr ^ *p.offset(0 as libc::c_int as isize);
-    *x.offset(1 as libc::c_int as isize) = Xl;
+            ) ^ *p.offset(1);
+    *x.offset(0) = Xr ^ *p.offset(0);
+    *x.offset(1) = Xl;
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn Vapor_Blowfish_initstate(mut c: *mut blf_ctx) {
     static mut initstate: blf_ctx = {
@@ -2065,6 +2067,7 @@ pub unsafe extern "C" fn Vapor_Blowfish_initstate(mut c: *mut blf_ctx) {
     };
     *c = initstate;
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn Vapor_Blowfish_stream2word(
     mut data: *const u_int8_t,
@@ -2074,22 +2077,21 @@ pub unsafe extern "C" fn Vapor_Blowfish_stream2word(
     let mut i: u_int8_t = 0;
     let mut j: u_int16_t = 0;
     let mut temp: u_int32_t = 0;
-    temp = 0 as libc::c_int as u_int32_t;
+    temp = 0;
     j = *current;
-    i = 0 as libc::c_int as u_int8_t;
-    while (i as libc::c_int) < 4 as libc::c_int {
+    i = 0;
+    while i < 4 {
         if j as libc::c_int >= databytes as libc::c_int {
-            j = 0 as libc::c_int as u_int16_t;
+            j = 0;
         }
         temp = temp << 8 as libc::c_int | *data.offset(j as isize) as libc::c_uint;
         i = i.wrapping_add(1);
-        i;
         j = j.wrapping_add(1);
-        j;
     }
     *current = j;
     return temp;
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn Vapor_Blowfish_expand0state(
     mut c: *mut blf_ctx,
@@ -2101,42 +2103,40 @@ pub unsafe extern "C" fn Vapor_Blowfish_expand0state(
     let mut k: u_int16_t = 0;
     let mut temp: u_int32_t = 0;
     let mut data: [u_int32_t; 2] = [0; 2];
-    j = 0 as libc::c_int as u_int16_t;
-    i = 0 as libc::c_int as u_int16_t;
+    j = 0;
+    i = 0;
     while (i as libc::c_int) < 16 as libc::c_int + 2 as libc::c_int {
         temp = Vapor_Blowfish_stream2word(key, keybytes, &mut j);
         (*c).P[i as usize] = (*c).P[i as usize] ^ temp;
         i = i.wrapping_add(1);
-        i;
     }
-    j = 0 as libc::c_int as u_int16_t;
-    data[0 as libc::c_int as usize] = 0 as libc::c_int as u_int32_t;
-    data[1 as libc::c_int as usize] = 0 as libc::c_int as u_int32_t;
-    i = 0 as libc::c_int as u_int16_t;
-    while (i as libc::c_int) < 16 as libc::c_int + 2 as libc::c_int {
+    j = 0;
+    data[0] = 0;
+    data[1] = 0;
+    i = 0;
+    while i < 16 + 2 {
         Vapor_Blowfish_encipher(c, data.as_mut_ptr());
-        (*c).P[i as usize] = data[0 as libc::c_int as usize];
+        (*c).P[i as usize] = data[0];
         (*c)
-            .P[(i as libc::c_int + 1 as libc::c_int)
-            as usize] = data[1 as libc::c_int as usize];
-        i = (i as libc::c_int + 2 as libc::c_int) as u_int16_t;
+            .P[(i + 1) as usize] = data[1];
+        i = (i + 2) as u_int16_t;
     }
-    i = 0 as libc::c_int as u_int16_t;
-    while (i as libc::c_int) < 4 as libc::c_int {
-        k = 0 as libc::c_int as u_int16_t;
+    i = 0;
+    while i < 4 {
+        k = 0;
         while (k as libc::c_int) < 256 as libc::c_int {
             Vapor_Blowfish_encipher(c, data.as_mut_ptr());
-            (*c).S[i as usize][k as usize] = data[0 as libc::c_int as usize];
+            (*c).S[i as usize][k as usize] = data[0];
             (*c)
                 .S[i
                 as usize][(k as libc::c_int + 1 as libc::c_int)
-                as usize] = data[1 as libc::c_int as usize];
+                as usize] = data[1];
             k = (k as libc::c_int + 2 as libc::c_int) as u_int16_t;
         }
         i = i.wrapping_add(1);
-        i;
     }
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn Vapor_Blowfish_expandstate(
     mut c: *mut blf_ctx,
@@ -2150,50 +2150,43 @@ pub unsafe extern "C" fn Vapor_Blowfish_expandstate(
     let mut k: u_int16_t = 0;
     let mut temp: u_int32_t = 0;
     let mut d: [u_int32_t; 2] = [0; 2];
-    j = 0 as libc::c_int as u_int16_t;
-    i = 0 as libc::c_int as u_int16_t;
-    while (i as libc::c_int) < 16 as libc::c_int + 2 as libc::c_int {
+    j = 0;
+    i = 0;
+    while i < 16 + 2 {
         temp = Vapor_Blowfish_stream2word(key, keybytes, &mut j);
         (*c).P[i as usize] = (*c).P[i as usize] ^ temp;
         i = i.wrapping_add(1);
-        i;
     }
-    j = 0 as libc::c_int as u_int16_t;
-    d[0 as libc::c_int as usize] = 0 as libc::c_int as u_int32_t;
-    d[1 as libc::c_int as usize] = 0 as libc::c_int as u_int32_t;
-    i = 0 as libc::c_int as u_int16_t;
+    j = 0;
+    d[0] = 0;
+    d[1] = 0;
+    i = 0;
     while (i as libc::c_int) < 16 as libc::c_int + 2 as libc::c_int {
-        d[0 as libc::c_int as usize]
-            ^= Vapor_Blowfish_stream2word(data, databytes, &mut j);
-        d[1 as libc::c_int as usize]
-            ^= Vapor_Blowfish_stream2word(data, databytes, &mut j);
+        d[0] ^= Vapor_Blowfish_stream2word(data, databytes, &mut j);
+        d[1] ^= Vapor_Blowfish_stream2word(data, databytes, &mut j);
         Vapor_Blowfish_encipher(c, d.as_mut_ptr());
-        (*c).P[i as usize] = d[0 as libc::c_int as usize];
+        (*c).P[i as usize] = d[0];
         (*c)
             .P[(i as libc::c_int + 1 as libc::c_int)
-            as usize] = d[1 as libc::c_int as usize];
+            as usize] = d[1];
         i = (i as libc::c_int + 2 as libc::c_int) as u_int16_t;
     }
-    i = 0 as libc::c_int as u_int16_t;
+    i = 0;
     while (i as libc::c_int) < 4 as libc::c_int {
-        k = 0 as libc::c_int as u_int16_t;
+        k = 0;
         while (k as libc::c_int) < 256 as libc::c_int {
-            d[0 as libc::c_int as usize]
-                ^= Vapor_Blowfish_stream2word(data, databytes, &mut j);
-            d[1 as libc::c_int as usize]
-                ^= Vapor_Blowfish_stream2word(data, databytes, &mut j);
+            d[0] ^= Vapor_Blowfish_stream2word(data, databytes, &mut j);
+            d[1] ^= Vapor_Blowfish_stream2word(data, databytes, &mut j);
             Vapor_Blowfish_encipher(c, d.as_mut_ptr());
-            (*c).S[i as usize][k as usize] = d[0 as libc::c_int as usize];
+            (*c).S[i as usize][k as usize] = d[0];
             (*c)
-                .S[i
-                as usize][(k as libc::c_int + 1 as libc::c_int)
-                as usize] = d[1 as libc::c_int as usize];
+                .S[i as usize][(k as libc::c_int + 1 as libc::c_int)as usize] = d[1];
             k = (k as libc::c_int + 2 as libc::c_int) as u_int16_t;
         }
         i = i.wrapping_add(1);
-        i;
     }
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn vapor_blf_key(
     mut c: *mut blf_ctx,
@@ -2203,6 +2196,7 @@ pub unsafe extern "C" fn vapor_blf_key(
     Vapor_Blowfish_initstate(c);
     Vapor_Blowfish_expand0state(c, k, len);
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn vapor_blf_enc(
     mut c: *mut blf_ctx,
@@ -2212,12 +2206,11 @@ pub unsafe extern "C" fn vapor_blf_enc(
     let mut d: *mut u_int32_t = 0 as *mut u_int32_t;
     let mut i: u_int16_t = 0;
     d = data;
-    i = 0 as libc::c_int as u_int16_t;
+    i = 0;
     while (i as libc::c_int) < blocks as libc::c_int {
         Vapor_Blowfish_encipher(c, d);
-        d = d.offset(2 as libc::c_int as isize);
+        d = d.offset(2);
         i = i.wrapping_add(1);
-        i;
     }
 }
 #[no_mangle]
@@ -2229,14 +2222,14 @@ pub unsafe extern "C" fn vapor_blf_dec(
     let mut d: *mut u_int32_t = 0 as *mut u_int32_t;
     let mut i: u_int16_t = 0;
     d = data;
-    i = 0 as libc::c_int as u_int16_t;
+    i = 0;
     while (i as libc::c_int) < blocks as libc::c_int {
         Vapor_Blowfish_decipher(c, d);
-        d = d.offset(2 as libc::c_int as isize);
+        d = d.offset(2);
         i = i.wrapping_add(1);
-        i;
     }
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn vapor_blf_ecb_encrypt(
     mut c: *mut blf_ctx,
@@ -2247,70 +2240,71 @@ pub unsafe extern "C" fn vapor_blf_ecb_encrypt(
     let mut r: u_int32_t = 0;
     let mut d: [u_int32_t; 2] = [0; 2];
     let mut i: u_int32_t = 0;
-    i = 0 as libc::c_int as u_int32_t;
+    i = 0;
     while i < len {
-        l = ((*data.offset(0 as libc::c_int as isize) as libc::c_int)
+        l = ((*data.offset(0) as libc::c_int)
             << 24 as libc::c_int
-            | (*data.offset(1 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(1) as libc::c_int)
                 << 16 as libc::c_int
-            | (*data.offset(2 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(2) as libc::c_int)
                 << 8 as libc::c_int
-            | *data.offset(3 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-        r = ((*data.offset(4 as libc::c_int as isize) as libc::c_int)
+            | *data.offset(3) as libc::c_int) as u_int32_t;
+        r = ((*data.offset(4) as libc::c_int)
             << 24 as libc::c_int
-            | (*data.offset(5 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(5) as libc::c_int)
                 << 16 as libc::c_int
-            | (*data.offset(6 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(6) as libc::c_int)
                 << 8 as libc::c_int
-            | *data.offset(7 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-        d[0 as libc::c_int as usize] = l;
-        d[1 as libc::c_int as usize] = r;
+            | *data.offset(7) as libc::c_int) as u_int32_t;
+        d[0] = l;
+        d[1] = r;
         Vapor_Blowfish_encipher(c, d.as_mut_ptr());
-        l = d[0 as libc::c_int as usize];
-        r = d[1 as libc::c_int as usize];
+        l = d[0];
+        r = d[1];
         *data
             .offset(
-                0 as libc::c_int as isize,
+                0,
             ) = (l >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                1 as libc::c_int as isize,
+                1,
             ) = (l >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                2 as libc::c_int as isize,
+                2,
             ) = (l >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                3 as libc::c_int as isize,
+                3,
             ) = (l & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
         *data
             .offset(
-                4 as libc::c_int as isize,
+                4,
             ) = (r >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                5 as libc::c_int as isize,
+                5,
             ) = (r >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                6 as libc::c_int as isize,
+                6,
             ) = (r >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                7 as libc::c_int as isize,
+                7,
             ) = (r & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
-        data = data.offset(8 as libc::c_int as isize);
-        i = (i as libc::c_uint).wrapping_add(8 as libc::c_int as libc::c_uint)
+        data = data.offset(8);
+        i = (i as libc::c_uint).wrapping_add(8)
             as u_int32_t as u_int32_t;
     }
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn vapor_blf_ecb_decrypt(
     mut c: *mut blf_ctx,
@@ -2321,70 +2315,71 @@ pub unsafe extern "C" fn vapor_blf_ecb_decrypt(
     let mut r: u_int32_t = 0;
     let mut d: [u_int32_t; 2] = [0; 2];
     let mut i: u_int32_t = 0;
-    i = 0 as libc::c_int as u_int32_t;
+    i = 0;
     while i < len {
-        l = ((*data.offset(0 as libc::c_int as isize) as libc::c_int)
+        l = ((*data.offset(0) as libc::c_int)
             << 24 as libc::c_int
-            | (*data.offset(1 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(1) as libc::c_int)
                 << 16 as libc::c_int
-            | (*data.offset(2 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(2) as libc::c_int)
                 << 8 as libc::c_int
-            | *data.offset(3 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-        r = ((*data.offset(4 as libc::c_int as isize) as libc::c_int)
+            | *data.offset(3) as libc::c_int) as u_int32_t;
+        r = ((*data.offset(4) as libc::c_int)
             << 24 as libc::c_int
-            | (*data.offset(5 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(5) as libc::c_int)
                 << 16 as libc::c_int
-            | (*data.offset(6 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(6) as libc::c_int)
                 << 8 as libc::c_int
-            | *data.offset(7 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-        d[0 as libc::c_int as usize] = l;
-        d[1 as libc::c_int as usize] = r;
+            | *data.offset(7) as libc::c_int) as u_int32_t;
+        d[0] = l;
+        d[1] = r;
         Vapor_Blowfish_decipher(c, d.as_mut_ptr());
-        l = d[0 as libc::c_int as usize];
-        r = d[1 as libc::c_int as usize];
+        l = d[0];
+        r = d[1];
         *data
             .offset(
-                0 as libc::c_int as isize,
+                0,
             ) = (l >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                1 as libc::c_int as isize,
+                1,
             ) = (l >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                2 as libc::c_int as isize,
+                2,
             ) = (l >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                3 as libc::c_int as isize,
+                3,
             ) = (l & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
         *data
             .offset(
-                4 as libc::c_int as isize,
+                4,
             ) = (r >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                5 as libc::c_int as isize,
+                5,
             ) = (r >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                6 as libc::c_int as isize,
+                6,
             ) = (r >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                7 as libc::c_int as isize,
+                7,
             ) = (r & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
-        data = data.offset(8 as libc::c_int as isize);
-        i = (i as libc::c_uint).wrapping_add(8 as libc::c_int as libc::c_uint)
+        data = data.offset(8);
+        i = (i as libc::c_uint).wrapping_add(8)
             as u_int32_t as u_int32_t;
     }
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn vapor_blf_cbc_encrypt(
     mut c: *mut blf_ctx,
@@ -2397,79 +2392,78 @@ pub unsafe extern "C" fn vapor_blf_cbc_encrypt(
     let mut d: [u_int32_t; 2] = [0; 2];
     let mut i: u_int32_t = 0;
     let mut j: u_int32_t = 0;
-    i = 0 as libc::c_int as u_int32_t;
+    i = 0;
     while i < len {
-        j = 0 as libc::c_int as u_int32_t;
-        while j < 8 as libc::c_int as libc::c_uint {
+        j = 0;
+        while j < 8 {
             let ref mut fresh0 = *data.offset(j as isize);
             *fresh0 = (*fresh0 as libc::c_int ^ *iv.offset(j as isize) as libc::c_int)
                 as u_int8_t;
             j = j.wrapping_add(1);
-            j;
         }
-        l = ((*data.offset(0 as libc::c_int as isize) as libc::c_int)
+        l = ((*data.offset(0) as libc::c_int)
             << 24 as libc::c_int
-            | (*data.offset(1 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(1) as libc::c_int)
                 << 16 as libc::c_int
-            | (*data.offset(2 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(2) as libc::c_int)
                 << 8 as libc::c_int
-            | *data.offset(3 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-        r = ((*data.offset(4 as libc::c_int as isize) as libc::c_int)
+            | *data.offset(3) as libc::c_int) as u_int32_t;
+        r = ((*data.offset(4) as libc::c_int)
             << 24 as libc::c_int
-            | (*data.offset(5 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(5) as libc::c_int)
                 << 16 as libc::c_int
-            | (*data.offset(6 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(6) as libc::c_int)
                 << 8 as libc::c_int
-            | *data.offset(7 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-        d[0 as libc::c_int as usize] = l;
-        d[1 as libc::c_int as usize] = r;
+            | *data.offset(7) as libc::c_int) as u_int32_t;
+        d[0] = l;
+        d[1] = r;
         Vapor_Blowfish_encipher(c, d.as_mut_ptr());
-        l = d[0 as libc::c_int as usize];
-        r = d[1 as libc::c_int as usize];
+        l = d[0];
+        r = d[1];
         *data
             .offset(
-                0 as libc::c_int as isize,
+                0,
             ) = (l >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                1 as libc::c_int as isize,
+                1,
             ) = (l >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                2 as libc::c_int as isize,
+                2,
             ) = (l >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                3 as libc::c_int as isize,
+                3,
             ) = (l & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
         *data
             .offset(
-                4 as libc::c_int as isize,
+                4,
             ) = (r >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                5 as libc::c_int as isize,
+                5,
             ) = (r >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                6 as libc::c_int as isize,
+                6,
             ) = (r >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                7 as libc::c_int as isize,
+                7,
             ) = (r & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
         iv = data;
-        data = data.offset(8 as libc::c_int as isize);
-        i = (i as libc::c_uint).wrapping_add(8 as libc::c_int as libc::c_uint)
-            as u_int32_t as u_int32_t;
+        data = data.offset(8);
+        i = (i as libc::c_uint).wrapping_add(8) as u_int32_t as u_int32_t;
     }
 }
+
 #[no_mangle]
 pub unsafe extern "C" fn vapor_blf_cbc_decrypt(
     mut c: *mut blf_ctx,
@@ -2483,131 +2477,128 @@ pub unsafe extern "C" fn vapor_blf_cbc_decrypt(
     let mut iv: *mut u_int8_t = 0 as *mut u_int8_t;
     let mut i: u_int32_t = 0;
     let mut j: u_int32_t = 0;
-    iv = data.offset(len as isize).offset(-(16 as libc::c_int as isize));
-    data = data.offset(len as isize).offset(-(8 as libc::c_int as isize));
-    i = len.wrapping_sub(8 as libc::c_int as libc::c_uint);
-    while i >= 8 as libc::c_int as libc::c_uint {
-        l = ((*data.offset(0 as libc::c_int as isize) as libc::c_int)
+    iv = data.offset(len as isize).offset(-16);
+    data = data.offset(len as isize).offset(-8);
+    i = len.wrapping_sub(8);
+    while i >= 8 {
+        l = ((*data.offset(0) as libc::c_int)
             << 24 as libc::c_int
-            | (*data.offset(1 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(1) as libc::c_int)
                 << 16 as libc::c_int
-            | (*data.offset(2 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(2) as libc::c_int)
                 << 8 as libc::c_int
-            | *data.offset(3 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-        r = ((*data.offset(4 as libc::c_int as isize) as libc::c_int)
+            | *data.offset(3) as libc::c_int) as u_int32_t;
+        r = ((*data.offset(4) as libc::c_int)
             << 24 as libc::c_int
-            | (*data.offset(5 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(5) as libc::c_int)
                 << 16 as libc::c_int
-            | (*data.offset(6 as libc::c_int as isize) as libc::c_int)
+            | (*data.offset(6) as libc::c_int)
                 << 8 as libc::c_int
-            | *data.offset(7 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-        d[0 as libc::c_int as usize] = l;
-        d[1 as libc::c_int as usize] = r;
+            | *data.offset(7) as libc::c_int) as u_int32_t;
+        d[0] = l;
+        d[1] = r;
         Vapor_Blowfish_decipher(c, d.as_mut_ptr());
-        l = d[0 as libc::c_int as usize];
-        r = d[1 as libc::c_int as usize];
+        l = d[0];
+        r = d[1];
         *data
             .offset(
-                0 as libc::c_int as isize,
+                0,
             ) = (l >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                1 as libc::c_int as isize,
+                1,
             ) = (l >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                2 as libc::c_int as isize,
+                2,
             ) = (l >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                3 as libc::c_int as isize,
+                3,
             ) = (l & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
         *data
             .offset(
-                4 as libc::c_int as isize,
+                4,
             ) = (r >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                5 as libc::c_int as isize,
+                5,
             ) = (r >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                6 as libc::c_int as isize,
+                6,
             ) = (r >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint)
             as u_int8_t;
         *data
             .offset(
-                7 as libc::c_int as isize,
+                7,
             ) = (r & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
-        j = 0 as libc::c_int as u_int32_t;
-        while j < 8 as libc::c_int as libc::c_uint {
+        j = 0;
+        while j < 8 {
             let ref mut fresh1 = *data.offset(j as isize);
             *fresh1 = (*fresh1 as libc::c_int ^ *iv.offset(j as isize) as libc::c_int)
                 as u_int8_t;
             j = j.wrapping_add(1);
-            j;
         }
-        iv = iv.offset(-(8 as libc::c_int as isize));
-        data = data.offset(-(8 as libc::c_int as isize));
-        i = (i as libc::c_uint).wrapping_sub(8 as libc::c_int as libc::c_uint)
-            as u_int32_t as u_int32_t;
+        iv = iv.offset(-8);
+        data = data.offset(-8);
+        i = (i as libc::c_uint).wrapping_sub(8) as u_int32_t as u_int32_t;
     }
-    l = ((*data.offset(0 as libc::c_int as isize) as libc::c_int) << 24 as libc::c_int
-        | (*data.offset(1 as libc::c_int as isize) as libc::c_int) << 16 as libc::c_int
-        | (*data.offset(2 as libc::c_int as isize) as libc::c_int) << 8 as libc::c_int
-        | *data.offset(3 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-    r = ((*data.offset(4 as libc::c_int as isize) as libc::c_int) << 24 as libc::c_int
-        | (*data.offset(5 as libc::c_int as isize) as libc::c_int) << 16 as libc::c_int
-        | (*data.offset(6 as libc::c_int as isize) as libc::c_int) << 8 as libc::c_int
-        | *data.offset(7 as libc::c_int as isize) as libc::c_int) as u_int32_t;
-    d[0 as libc::c_int as usize] = l;
-    d[1 as libc::c_int as usize] = r;
+    l = ((*data.offset(0) as libc::c_int) << 24 as libc::c_int
+        | (*data.offset(1) as libc::c_int) << 16 as libc::c_int
+        | (*data.offset(2) as libc::c_int) << 8 as libc::c_int
+        | *data.offset(3) as libc::c_int) as u_int32_t;
+    r = ((*data.offset(4) as libc::c_int) << 24 as libc::c_int
+        | (*data.offset(5) as libc::c_int) << 16 as libc::c_int
+        | (*data.offset(6) as libc::c_int) << 8 as libc::c_int
+        | *data.offset(7) as libc::c_int) as u_int32_t;
+    d[0] = l;
+    d[1] = r;
     Vapor_Blowfish_decipher(c, d.as_mut_ptr());
-    l = d[0 as libc::c_int as usize];
-    r = d[1 as libc::c_int as usize];
+    l = d[0];
+    r = d[1];
     *data
         .offset(
-            0 as libc::c_int as isize,
+            0,
         ) = (l >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
     *data
         .offset(
-            1 as libc::c_int as isize,
+            1,
         ) = (l >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
     *data
         .offset(
-            2 as libc::c_int as isize,
+            2,
         ) = (l >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
     *data
         .offset(
-            3 as libc::c_int as isize,
+            3,
         ) = (l & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
     *data
         .offset(
-            4 as libc::c_int as isize,
+            4,
         ) = (r >> 24 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
     *data
         .offset(
-            5 as libc::c_int as isize,
+            5,
         ) = (r >> 16 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
     *data
         .offset(
-            6 as libc::c_int as isize,
+            6,
         ) = (r >> 8 as libc::c_int & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
     *data
         .offset(
-            7 as libc::c_int as isize,
+            7,
         ) = (r & 0xff as libc::c_int as libc::c_uint) as u_int8_t;
-    j = 0 as libc::c_int as u_int32_t;
-    while j < 8 as libc::c_int as libc::c_uint {
+    j = 0;
+    while j < 8 {
         let ref mut fresh2 = *data.offset(j as isize);
         *fresh2 = (*fresh2 as libc::c_int ^ *iva.offset(j as isize) as libc::c_int)
             as u_int8_t;
         j = j.wrapping_add(1);
-        j;
     }
 }
