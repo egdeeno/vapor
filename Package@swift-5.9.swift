@@ -31,7 +31,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/routing-kit.git", from: "4.5.0"),
         
         // Event-driven network application framework for high performance protocol servers & clients, non-blocking.
-        .package(url: "https://github.com/apple/swift-nio.git", from: "2.59.0"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.62.0"),
         
         // Bindings to OpenSSL-compatible libraries for TLS support in SwiftNIO
         .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "2.8.0"),
@@ -108,7 +108,7 @@ let package = Package(
                 .product(name: "MultipartKit", package: "multipart-kit"),
                 .product(name: "Atomics", package: "swift-atomics"),
             ],
-            swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
         ),
         
         // Development
@@ -118,7 +118,7 @@ let package = Package(
                 .target(name: "Vapor"),
             ],
             resources: [.copy("Resources")],
-            swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
         ),
         
         // Testing
@@ -127,7 +127,7 @@ let package = Package(
             dependencies: [
                 .target(name: "Vapor"),
             ],
-            swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
         ),
         .testTarget(
             name: "VaporTests",
@@ -145,7 +145,7 @@ let package = Package(
                 .copy("Utilities/expired.crt"),
                 .copy("Utilities/expired.key"),
             ],
-            swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
         ),
         .testTarget(
             name: "AsyncTests",
@@ -153,7 +153,7 @@ let package = Package(
                 .product(name: "NIOTestUtils", package: "swift-nio"),
                 .target(name: "XCTVapor"),
             ],
-            swiftSettings: [.enableExperimentalFeature("StrictConcurrency")]
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
         ),
     ]
 )
