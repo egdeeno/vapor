@@ -28,7 +28,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "4.0.0"),
 
         // 🚍 High-performance trie-node router.
-        .package(url: "https://github.com/vapor/routing-kit.git", from: "4.5.0"),
+        .package(url: "https://github.com/vapor/routing-kit.git", from: "4.9.0"),
 
         // Event-driven network application framework for high performance protocol servers & clients, non-blocking.
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.62.0"),
@@ -63,16 +63,10 @@ let package = Package(
     targets: [
         // C helpers
         //.target(name: "CVaporBcrypt"),
-        //.target(name: "CVaporURLParser"),
         
         .target(
             name: "RustVaporBcrypt",
             linkerSettings: [LinkerSetting.unsafeFlags(["-L./Sources/RustVaporBcrypt/", "-lpthread", "-ldl"])],
-            //linkerSettings: [LinkerSetting.linkedLibrary("rustshims")],
-            plugins: [.plugin(name: "RustShimsSourceGenPlugin")]),
-        .target(
-            name: "RustVaporURLParser",
-            linkerSettings: [LinkerSetting.unsafeFlags(["-L./Sources/RustVaporURLParser/", "-lpthread", "-ldl"])],
             //linkerSettings: [LinkerSetting.linkedLibrary("rustshims")],
             plugins: [.plugin(name: "RustShimsSourceGenPlugin")]),
         .plugin(
@@ -88,7 +82,6 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "AsyncKit", package: "async-kit"),
                 .target(name: "RustVaporBcrypt"),
-                .target(name: "RustVaporURLParser"),
                 .product(name: "ConsoleKit", package: "console-kit"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Metrics", package: "swift-metrics"),
@@ -146,7 +139,10 @@ let package = Package(
                 .copy("Utilities/expired.crt"),
                 .copy("Utilities/expired.key"),
             ],
-            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
+            swiftSettings: [
+                .enableUpcomingFeature("BareSlashRegexLiterals"),
+                .enableExperimentalFeature("StrictConcurrency=complete"),
+            ]
         ),
         .testTarget(
             name: "AsyncTests",
@@ -154,7 +150,10 @@ let package = Package(
                 .product(name: "NIOTestUtils", package: "swift-nio"),
                 .target(name: "XCTVapor"),
             ],
-            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
+            swiftSettings: [
+                .enableUpcomingFeature("BareSlashRegexLiterals"),
+                .enableExperimentalFeature("StrictConcurrency=complete"),
+            ]
         ),
     ]
 )

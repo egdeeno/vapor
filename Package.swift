@@ -28,7 +28,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "4.0.0"),
 
         // 🚍 High-performance trie-node router.
-        .package(url: "https://github.com/vapor/routing-kit.git", from: "4.5.0"),
+        .package(url: "https://github.com/vapor/routing-kit.git", from: "4.9.0"),
 
         // 💥 Backtraces for Swift on Linux
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.1.1"),
@@ -66,16 +66,10 @@ let package = Package(
     targets: [
         // C helpers
         //.target(name: "CVaporBcrypt"),
-        //.target(name: "CVaporURLParser"),
         
         .target(
             name: "RustVaporBcrypt",
             linkerSettings: [LinkerSetting.unsafeFlags(["-L./Sources/RustVaporBcrypt/", "-lpthread", "-ldl"])],
-            //linkerSettings: [LinkerSetting.linkedLibrary("rustshims")],
-            plugins: [.plugin(name: "RustShimsSourceGenPlugin")]),
-        .target(
-            name: "RustVaporURLParser",
-            linkerSettings: [LinkerSetting.unsafeFlags(["-L./Sources/RustVaporURLParser/", "-lpthread", "-ldl"])],
             //linkerSettings: [LinkerSetting.linkedLibrary("rustshims")],
             plugins: [.plugin(name: "RustShimsSourceGenPlugin")]),
         .plugin(
@@ -89,7 +83,6 @@ let package = Package(
             .product(name: "AsyncKit", package: "async-kit"),
             .product(name: "Backtrace", package: "swift-backtrace"),
             .target(name: "RustVaporBcrypt"),
-            .target(name: "RustVaporURLParser"),
             .product(name: "ConsoleKit", package: "console-kit"),
             .product(name: "Logging", package: "swift-log"),
             .product(name: "Metrics", package: "swift-metrics"),
