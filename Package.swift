@@ -131,6 +131,7 @@ let package = Package(
             .copy("Utilities/my-secret-env-content"),
             .copy("Utilities/expired.crt"),
             .copy("Utilities/expired.key"),
+            .copy("Utilities/long-test-file.txt"),
         ]),
     ]
 )
