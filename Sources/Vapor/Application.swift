@@ -114,7 +114,7 @@ public final class Application: Sendable {
     private let _lifecycle: NIOLockedValueBox<Lifecycle>
     private let _locks: NIOLockedValueBox<Locks>
     
-    @available(*, noasync, message: "This initialiser cannot be used in async contexts, Application.makeApplication() instead")
+    @available(*, noasync, message: "This initialiser cannot be used in async contexts, use Application.make(_:_:) instead")
     public convenience init(
         _ environment: Environment = .development,
         _ eventLoopGroupProvider: EventLoopGroupProvider = .singleton
@@ -155,7 +155,7 @@ public final class Application: Sendable {
         self.servers.use(.http)
         self.clients.initialize()
         self.clients.use(.http)
-        self.commands.use(self.servers.command, as: "serve", isDefault: true)
+        self.asyncCommands.use(self.servers.command, as: "serve", isDefault: true)
         self.asyncCommands.use(RoutesCommand(), as: "routes")
     }
     
