@@ -1,5 +1,9 @@
 #if !canImport(Darwin)
+#if compiler(>=6.0)
+import Dispatch
+#else
 @preconcurrency import Dispatch
+#endif
 #endif
 import Foundation
 import XCTest
@@ -48,7 +52,7 @@ final class ClientTests: XCTestCase {
         }
         
         remoteApp.environment.arguments = ["serve"]
-        try remoteApp.boot()
+        try await remoteApp.asyncBoot()
         try await remoteApp.startup()
         
         XCTAssertNotNil(remoteApp.http.server.shared.localAddress)

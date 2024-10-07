@@ -4,10 +4,6 @@ import NIOConcurrencyHelpers
 import NIOCore
 import NIOPosix
 
-#if swift(<5.9)
-    import Backtrace
-#endif
-
 /// Core type representing a Vapor application.
 public final class Application: Sendable {
     public var environment: Environment {
@@ -120,14 +116,12 @@ public final class Application: Sendable {
         _ eventLoopGroupProvider: EventLoopGroupProvider = .singleton
     ) {
         self.init(environment, eventLoopGroupProvider, async: false)
+        self.asyncCommands.use(self.servers.command, as: "serve", isDefault: true)
         DotEnvFile.load(for: environment, on: .shared(self.eventLoopGroup), fileio: self.fileio, logger: self.logger)
     }
     
     // async flag here is just to stop the compiler from complaining about duplicates
     private init(_ environment: Environment = .development, _ eventLoopGroupProvider: EventLoopGroupProvider = .singleton, async: Bool) {
-        #if swift(<5.9)
-            Backtrace.install()
-        #endif
         self._environment = .init(environment)
         self.eventLoopGroupProvider = eventLoopGroupProvider
         switch eventLoopGroupProvider {
@@ -143,7 +137,7 @@ public final class Application: Sendable {
         self._storage = .init(.init(logger: logger))
         self._lifecycle = .init(.init())
         self.isBooted = .init(false)
-        self.core.initialize()
+        self.core.initialize(asyncEnvironment: async)
         self.caches.initialize()
         self.views.initialize()
         self.passwords.use(.bcrypt)
@@ -155,12 +149,12 @@ public final class Application: Sendable {
         self.servers.use(.http)
         self.clients.initialize()
         self.clients.use(.http)
-        self.asyncCommands.use(self.servers.command, as: "serve", isDefault: true)
         self.asyncCommands.use(RoutesCommand(), as: "routes")
     }
     
     public static func make(_ environment: Environment = .development, _ eventLoopGroupProvider: EventLoopGroupProvider = .singleton) async throws -> Application {
         let app = Application(environment, eventLoopGroupProvider, async: true)
+        await app.asyncCommands.use(app.servers.asyncCommand, as: "serve", isDefault: true)
         await DotEnvFile.load(for: app.environment, fileio: app.fileio, logger: app.logger)
         return app
     }
@@ -218,7 +212,7 @@ public final class Application: Sendable {
     /// If you want to run your ``Application`` indefinitely, or until your code shuts the application down,
     /// use ``execute()`` instead.
     public func startup() async throws {
-        try self.boot()
+        try await self.asyncBoot()
 
         let combinedCommands = AsyncCommands(
             commands: self.asyncCommands.commands.merging(self.commands.commands) { $1 },
@@ -231,6 +225,9 @@ public final class Application: Sendable {
         try await self.console.run(combinedCommands, with: context)
     }
 
+    
+    @available(*, noasync, message: "This can potentially block the thread and should not be called in an async context", renamed: "asyncBoot()")
+    /// Called when the applications starts up, will trigger the lifecycle handlers
     public func boot() throws {
         try self.isBooted.withLockedValue { booted in
             guard !booted else {
@@ -241,10 +238,38 @@ public final class Application: Sendable {
             try self.lifecycle.handlers.forEach { try $0.didBoot(self) }
         }
     }
+    
+    /// Called when the applications starts up, will trigger the lifecycle handlers. The asynchronous version of ``boot()``
+    public func asyncBoot() async throws {
+        /// Skip the boot process if already booted
+        guard !self.isBooted.withLockedValue({
+            var result = true
+            swap(&$0, &result)
+            return result
+        }) else {
+            return
+        }
+
+        for handler in self.lifecycle.handlers {
+            try await handler.willBootAsync(self)
+        }
+        for handler in self.lifecycle.handlers {
+            try await handler.didBootAsync(self)
+        }
+    }
 
     @available(*, noasync, message: "This can block the thread and should not be called in an async context", renamed: "asyncShutdown()")
     public func shutdown() {
-        triggerShutdown()
+        assert(!self.didShutdown, "Application has already shut down")
+        self.logger.debug("Application shutting down")
+
+        self.logger.trace("Shutting down providers")
+        self.lifecycle.handlers.reversed().forEach { $0.shutdown(self) }
+        self.lifecycle.handlers = []
+
+        self.logger.trace("Clearing Application storage")
+        self.storage.shutdown()
+        self.storage.clear()
 
         switch self.eventLoopGroupProvider {
         case .shared:
@@ -263,7 +288,18 @@ public final class Application: Sendable {
     }
     
     public func asyncShutdown() async throws {
-        triggerShutdown()
+        assert(!self.didShutdown, "Application has already shut down")
+        self.logger.debug("Application shutting down")
+
+        self.logger.trace("Shutting down providers")
+        for handler in self.lifecycle.handlers.reversed()  {
+            await handler.shutdownAsync(self)
+        }
+        self.lifecycle.handlers = []
+
+        self.logger.trace("Clearing Application storage")
+        await self.storage.asyncShutdown()
+        self.storage.clear()
 
         switch self.eventLoopGroupProvider {
         case .shared:
@@ -279,19 +315,6 @@ public final class Application: Sendable {
 
         self._didShutdown.withLockedValue { $0 = true }
         self.logger.trace("Application shutdown complete")
-    }
-    
-    private func triggerShutdown() {
-        assert(!self.didShutdown, "Application has already shut down")
-        self.logger.debug("Application shutting down")
-
-        self.logger.trace("Shutting down providers")
-        self.lifecycle.handlers.reversed().forEach { $0.shutdown(self) }
-        self.lifecycle.handlers = []
-
-        self.logger.trace("Clearing Application storage")
-        self.storage.shutdown()
-        self.storage.clear()
     }
 
     deinit {
