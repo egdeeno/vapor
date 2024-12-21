@@ -13,6 +13,7 @@ let package = Package(
     products: [
         .library(name: "Vapor", targets: ["Vapor"]),
         .library(name: "XCTVapor", targets: ["XCTVapor"]),
+        .library(name: "VaporTesting", targets: ["VaporTesting"]),
     ],
     dependencies: [
         // HTTP client library built on SwiftNIO
@@ -50,6 +51,12 @@ let package = Package(
 
         // Swift metrics API
         .package(url: "https://github.com/apple/swift-metrics.git", from: "2.5.0"),
+        
+        // Swift tracing API
+        .package(url: "https://github.com/apple/swift-distributed-tracing.git", from: "1.1.0"),
+        
+        // Swift service context
+        .package(url: "https://github.com/apple/swift-service-context.git", from: "1.0.0"),
 
         // Swift collection algorithms
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
@@ -85,6 +92,8 @@ let package = Package(
                 .product(name: "ConsoleKit", package: "console-kit"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Metrics", package: "swift-metrics"),
+                .product(name: "Tracing", package: "swift-distributed-tracing"),
+                .product(name: "ServiceContextModule", package: "swift-service-context"),
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
                 .product(name: "NIOCore", package: "swift-nio"),
@@ -119,8 +128,24 @@ let package = Package(
 
         // Testing
         .target(
+            name: "VaporTestUtils",
+            dependencies: [
+                .target(name: "Vapor"),
+            ],
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
+        ),
+        .target(
+            name: "VaporTesting",
+            dependencies: [
+                .target(name: "VaporTestUtils"),
+                .target(name: "Vapor"),
+            ],
+            swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
+        ),
+        .target(
             name: "XCTVapor",
             dependencies: [
+                .target(name: "VaporTestUtils"),
                 .target(name: "Vapor"),
             ],
             swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
@@ -130,7 +155,8 @@ let package = Package(
             dependencies: [
                 .product(name: "NIOTestUtils", package: "swift-nio"),
                 .target(name: "XCTVapor"),
-                "Vapor",
+                .target(name: "VaporTesting"),
+                .target(name: "Vapor"),
             ],
             resources: [
                 .copy("Utilities/foo.txt"),
